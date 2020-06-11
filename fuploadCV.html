@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    </head>
+    <body>
+        <div style="width: 200px; height: 200px; background: grey" id="pasteTarget">
+            Click and paste here.
+        </div>
+
+        <script type="text/javascript">
+            window.onload = function () {
+                document.getElementById("pasteTarget").
+                        addEventListener("paste", handlePaste);
+            };
+            function handlePaste(e) {
+                for (var i = 0; i < e.clipboardData.items.length; i++) {
+                    var item = e.clipboardData.items[i];
+                    console.log(item.getAsFile());
+                    if (item.type.indexOf("image") - 1) {
+                        console.log('uploading');
+                        uploadFile(item.getAsFile());
+                    } else {
+                        console.log("Discardingimage paste data");
+                    }
+                }
+            }
+
+            function uploadFile(file) {
+                var formData = new FormData();
+                formData.append('imageFile', file);
+                $.ajax({
+                    url: 'http://localhost/demo/fupload.php',
+                    data: formData,
+                    type: 'POST',
+                    contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+                    processData: false, // NEEDED, DON'T OMIT THIS
+                    // ... Other options like success and etc
+                }).done(function (d) {
+                    console.log('done')
+                });
+            }
+
+
+        </script>
+    </body>
+</html>
